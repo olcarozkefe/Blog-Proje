@@ -1,0 +1,105 @@
+﻿@model IEnumerable<AdminBlog.Models.Category>
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Categories</h1>
+      </div>
+
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<!-- Content Header (Page header) -->
+<div class="card-body">
+  <button type="button" class="btn btn-success" onclick="$('#CategoryModal').modal('show'), $('#updateBtn').hide();"
+    data-toggle="modal" data-target="#modal-default">
+    Add New Category
+  </button>
+</div>
+<div class="card-body">
+
+
+  <table id="example2" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name Of Category</th>
+        <th>Transactions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @{
+        int sayac = 0;
+      }
+
+      @foreach (var item in Model)
+      {
+        sayac++;
+        <tr>
+          <td>@sayac</td>
+          <td>@item.Name</td>
+
+          <td>
+            <button class="btn btn-warning" onclick="updateForm(@item.Id)" type="button">Update</button>
+            <a asp-route-id="@item.Id" asp-action="DeleteCategory" class="btn btn-danger"><i class="fa fa-eraser"></i>
+              Delete</a>
+          </td>
+
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+
+
+
+  <div class="modal" id="CategoryModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Category</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/Home/AddCategory" autocomplete="off">
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="hidden" name="Id" id="Id" class="form-control">
+              <input type="text" name="Name" id="Name" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="clearForm()" data-dismiss="modal">Close</button>
+            <button type="submit" id="saveBtn" class="btn btn-primary">Add</button>
+            <button type="submit" id="updateBtn" class="btn btn-primary">Update</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+ <script>
+    $(() => clearForm())
+    function updateForm(Id){
+      fetch('/Home/CategoryDetails?Id='+Id)
+      .then(res => res.json())
+      .then(res =>{
+          $('#Id').val(res.id)
+          $('#Name').val(res.name)
+      })
+      $('#saveBtn').hide();
+       $('#updateBtn').show();
+      $('#CategoryModal').modal('show');
+    }
+    function clearForm(){
+        $('#Id').val(null)
+          $('#Name').val(null)
+       $('#saveBtn').show();
+       $('#updateBtn').hide();
+    }
+  </script> 
